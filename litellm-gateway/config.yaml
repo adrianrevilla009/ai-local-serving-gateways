@@ -1,0 +1,28 @@
+# One public alias ("chat") load-balanced over two local backends, with a fallback alias.
+model_list:
+  - model_name: chat
+    litellm_params:
+      model: ollama_chat/llama3.2:1b
+      api_base: http://ollama:11434
+  - model_name: chat
+    litellm_params:
+      model: openai/Qwen/Qwen2.5-0.5B-Instruct
+      api_base: http://vllm:8000/v1
+      api_key: none
+  - model_name: chat-fallback
+    litellm_params:
+      model: ollama_chat/qwen2.5:0.5b
+      api_base: http://ollama:11434
+
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 1
+  timeout: 30
+  fallbacks:
+    - chat: [chat-fallback]
+
+litellm_settings:
+  cache: true
+  cache_params:
+    type: local
+    ttl: 300

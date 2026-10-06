@@ -1,0 +1,25 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: order-scorer
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+spec:
+  predictor:
+    minReplicas: 1
+    maxReplicas: 3
+    scaleMetric: cpu
+    scaleTarget: 70
+    model:
+      modelFormat:
+        name: onnx
+      runtime: kserve-tritonserver
+      runtimeVersion: 24.08-py3
+      storageUri: s3://models/order-scorer
+      resources:
+        requests:
+          cpu: "1"
+          memory: 1Gi
+        limits:
+          cpu: "2"
+          memory: 2Gi

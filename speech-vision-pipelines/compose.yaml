@@ -1,0 +1,7 @@
+services:
+  speech:
+    image: fedirz/faster-whisper-server:0.4.1-cpu
+    ports: ["8001:8000"]
+  vision:
+    image: ollama/ollama:0.5.7
+    ports: ["11434:11434"]

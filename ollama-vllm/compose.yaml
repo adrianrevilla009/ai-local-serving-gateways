@@ -1,0 +1,20 @@
+# Ollama runs on CPU. vLLM needs an NVIDIA GPU, so it sits behind a profile.
+services:
+  ollama:
+    image: ollama/ollama:0.5.7
+    ports: ["11434:11434"]
+    volumes: ["ollama:/root/.ollama"]
+  vllm:
+    profiles: ["gpu"]
+    image: vllm/vllm-openai:v0.6.6
+    command: ["--model", "Qwen/Qwen2.5-0.5B-Instruct", "--max-model-len", "2048"]
+    ports: ["8000:8000"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+volumes:
+  ollama: {}
